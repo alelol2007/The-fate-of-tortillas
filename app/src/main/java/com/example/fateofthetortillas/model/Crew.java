@@ -1,10 +1,10 @@
 package com.example.fateofthetortillas.model;
 
-public class crew {
+public class Crew {
     public int faith;
     public int victories;
     public int missionsCompleted;
-    public crew(int faith, int victories, int missionsCompleted) {
+    public Crew(int faith, int victories, int missionsCompleted) {
         this.faith = faith;
         this.victories = victories;
     }
