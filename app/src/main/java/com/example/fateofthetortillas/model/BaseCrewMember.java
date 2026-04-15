@@ -30,7 +30,7 @@ public abstract class BaseCrewMember {
         this.alive = Boolean.TRUE;
         this.maxShield = maxShield;
     }
-    public abstract void act(BaseCrewMember target);
+
     public String getName(){
         return this.name;
     }
@@ -70,6 +70,7 @@ public abstract class BaseCrewMember {
         }
     }
 
+
     public void addExperience(int experience){
         this.experience += experience;
     }
@@ -95,7 +96,20 @@ public abstract class BaseCrewMember {
         }
         this.maxShield += shield;
     }
+    public void addSkill(int skill){
+        this.skill += skill;
+    }
+    public void addExperienceSkill(int experience) {
+        if (this.experience >= 2) {
+            this.addSkill(1);
+            this.experience = 0;
+        }
+        this.addExperience(experience);
+    }
 
+// the action works by having the member who commits it get points, and then the target gets affected, this can range from affecting the aliens to many other things
+    public abstract String act(BaseCrewMember target);
+    public abstract String actOther(BaseEnemyMember enemy);
 
 
 }

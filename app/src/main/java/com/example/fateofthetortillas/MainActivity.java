@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         // creating a new crew and then saving it to the database then calling it, does this make any senseeeee?????????????????
 
-        Crew myCurrentCrew=new Crew(100,0,0,null);
+        Crew myCurrentCrew=new Crew(10,100,0,null);
         db.crewDao().saveCrew(myCurrentCrew);
         Crew savedCrew = db.crewDao().getCrew();
         if (savedCrew != null) {

@@ -7,4 +7,3 @@ import androidx.room.TypeConverters;
 public abstract class AppDatabase extends RoomDatabase {
     public abstract CrewDao crewDao();
 }
-

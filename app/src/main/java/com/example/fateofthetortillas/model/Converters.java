@@ -18,5 +18,4 @@ public class Converters {
         Type type = new TypeToken<List<BaseCrewMember>>() {}.getType();
         return new Gson().fromJson(json, type);
     }
-
 }
