@@ -1,12 +1,29 @@
 package com.example.fateofthetortillas.model;
+import java.util.List;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "crew")
 public class Crew {
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+
     public int faith;
     public int victories;
     public int missionsCompleted;
-    public Crew(int faith, int victories, int missionsCompleted) {
+    public List<BaseCrewMember> crew;
+
+    public Crew() {}
+    @Ignore
+    public Crew(int faith, int victories, int missionsCompleted, List<BaseCrewMember> crew) {
         this.faith = faith;
         this.victories = victories;
+        this.crew = crew;
+        this.missionsCompleted = missionsCompleted;
+    }
+    public List<BaseCrewMember> getCrew() {
+        return crew;
     }
     public int getFaith() {
         return faith;
