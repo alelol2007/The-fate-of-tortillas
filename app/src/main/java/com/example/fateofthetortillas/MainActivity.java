@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tortila-db").allowMainThreadQueries().build();
 
         // creating a new crew and then saving it to the database then calling it, does this make any senseeeee?????????????????
-
-        Crew myCurrentCrew=new Crew(10,100,0,null);
+        String name = "name";
+        Crew myCurrentCrew=new Crew(name, 10,100,0,null);
         db.crewDao().saveCrew(myCurrentCrew);
         Crew savedCrew = db.crewDao().getCrew();
         if (savedCrew != null) {

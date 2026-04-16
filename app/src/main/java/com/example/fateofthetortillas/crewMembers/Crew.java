@@ -14,15 +14,18 @@ public class Crew {
     public List<BaseCrewMember> crew;
     public int faith;
     public Boolean alive;
-
+    public String crewName;
     public Crew() {}
+    public int level;
     @Ignore
-    public Crew( int faith, int victories, int missionsCompleted, List<BaseCrewMember> crew) {
+    public Crew( String crewName, int faith, int victories, int missionsCompleted, List<BaseCrewMember> crew) {
         this.faith = faith;
+        this.crewName=crewName;
         this.victories = victories;
         this.crew = crew;
         this.missionsCompleted = missionsCompleted;
         this.alive = Boolean.TRUE;
+        this.level = 0;
     }
     public List<BaseCrewMember> getCrew() {
         return crew;
@@ -49,6 +52,13 @@ public class Crew {
     }
     public int getFaith() {
         return faith;
+    }
+    public void looseVictories(int victories){
+        if (this.victories < victories){
+            this.victories = 0;
+            return;
+        }
+        this.victories -= victories;
     }
 
 

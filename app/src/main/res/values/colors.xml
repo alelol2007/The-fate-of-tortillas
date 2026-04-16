@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="space_black">#0B0E14</color>
+    <color name="plasma_blue">#00D4FF</color>
+    <color name="starlight_white">#E0E0E0</color>
+    <color name="blue_title">#4000D4FF</color>
 </resources>

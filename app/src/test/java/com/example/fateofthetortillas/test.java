@@ -31,7 +31,7 @@ public class test {
         members.add(new Medic("Doc"));
         members.add(new Soldier("Viking"));
 
-        playerCrew = new Crew(10, 0, 0, members);
+        playerCrew = new Crew("name", 10, 0, 0, members);
 
         List<BaseEnemyMember> aliens = new ArrayList<>();
         aliens.add(new AlienSoldier(5, 0.5f));

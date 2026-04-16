@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Fate of the tortillas</string>
+    <string name="character_name">Character Name</string>
+    <string name="energy">energy</string>
+    <string name="skill_10">Skill: 10</string>
+    <string name="specialization" />
+    <string name="skill" />
+    <string name="crew_header_label">Date: %1$s Name of crew: %2$s</string>
 </resources>
