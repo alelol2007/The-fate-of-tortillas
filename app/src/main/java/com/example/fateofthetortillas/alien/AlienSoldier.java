@@ -1,4 +1,6 @@
-package com.example.fateofthetortillas.model;
+package com.example.fateofthetortillas.alien;
+
+import com.example.fateofthetortillas.crewMembers.BaseCrewMember;
 
 public class AlienSoldier extends BaseEnemyMember{
     public AlienSoldier(int skill, float possibility){

@@ -9,8 +9,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.room.Room;
 
-import com.example.fateofthetortillas.model.AppDatabase;
-import com.example.fateofthetortillas.model.Crew;
+import com.example.fateofthetortillas.database.AppDatabase;
+import com.example.fateofthetortillas.crewMembers.Crew;
 
 public class MainActivity extends AppCompatActivity {
 

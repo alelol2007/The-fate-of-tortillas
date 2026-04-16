@@ -1,10 +1,13 @@
-package com.example.fateofthetortillas.model;
+package com.example.fateofthetortillas.database;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import com.example.fateofthetortillas.crewMembers.Crew;
+
 @Dao
 public interface CrewDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

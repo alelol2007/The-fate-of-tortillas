@@ -1,5 +1,7 @@
-package com.example.fateofthetortillas.model;
+package com.example.fateofthetortillas.crewMembers;
 
+
+import com.example.fateofthetortillas.alien.BaseEnemyMember;
 
 import java.util.Random;
 

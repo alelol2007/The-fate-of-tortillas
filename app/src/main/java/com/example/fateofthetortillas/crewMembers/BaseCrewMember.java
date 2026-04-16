@@ -1,7 +1,10 @@
-package com.example.fateofthetortillas.model;
+package com.example.fateofthetortillas.crewMembers;
 import java.util.UUID;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import com.example.fateofthetortillas.alien.BaseEnemyMember;
+
 @Entity(tableName = "crew_members")
 public abstract class BaseCrewMember {
     @PrimaryKey

@@ -1,4 +1,6 @@
-package com.example.fateofthetortillas.model;
+package com.example.fateofthetortillas.alien;
+import com.example.fateofthetortillas.crewMembers.BaseCrewMember;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

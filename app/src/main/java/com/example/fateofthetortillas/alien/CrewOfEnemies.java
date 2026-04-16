@@ -1,4 +1,4 @@
-package com.example.fateofthetortillas.model;
+package com.example.fateofthetortillas.alien;
 
 import java.util.List;
 

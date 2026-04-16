@@ -1,4 +1,4 @@
-package com.example.fateofthetortillas.model;
+package com.example.fateofthetortillas.crewMembers;
 import java.util.List;
 import androidx.room.Entity;
 import androidx.room.Ignore;

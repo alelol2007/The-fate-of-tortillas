@@ -1,5 +1,6 @@
-package com.example.fateofthetortillas.model;
-import java.util.UUID;
+package com.example.fateofthetortillas.crewMembers;
+import com.example.fateofthetortillas.alien.BaseEnemyMember;
+
 public class Pilot extends BaseCrewMember{
     public BaseCrewMember member;
     public BaseEnemyMember enemy;

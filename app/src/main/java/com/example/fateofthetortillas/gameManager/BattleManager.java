@@ -1,21 +1,20 @@
-package com.example.fateofthetortillas;
+package com.example.fateofthetortillas.gameManager;
 
-import com.example.fateofthetortillas.model.BaseCrewMember;
-import com.example.fateofthetortillas.model.BaseEnemyMember;
-import com.example.fateofthetortillas.model.Crew;
-import com.example.fateofthetortillas.model.CrewOfEnemies;
+import com.example.fateofthetortillas.crewMembers.BaseCrewMember;
+import com.example.fateofthetortillas.alien.BaseEnemyMember;
+import com.example.fateofthetortillas.crewMembers.Crew;
+import com.example.fateofthetortillas.alien.CrewOfEnemies;
 
-import java.util.List;
 import java.util.Random;
-public
-
 
 public class BattleManager {
     private Crew crew;
     private CrewOfEnemies crewOfEnemies;
-    private boolean isPlayerTurn = true;
+    public boolean isPlayerTurn = true;
     private int turnCounter = 0;
     private Random random = new Random();
+    public boolean isPlayerTurn() {
+        return isPlayerTurn;    }
 
     public BattleManager(Crew crew, CrewOfEnemies crewOfEnemies) {
         this.crew =  crew;
@@ -63,7 +62,8 @@ public class BattleManager {
             }
             for (BaseEnemyMember enemy : crewOfEnemies.enemyMembers){
                 if (!enemy.alive){
-                    // Logic for dead enemies
+                    // This is a placeholder for Vanessa
+                    System.out.println("DEBUG: " + enemy.name + " is dead. No tacos for them.");
                 }
             }
             return result;
