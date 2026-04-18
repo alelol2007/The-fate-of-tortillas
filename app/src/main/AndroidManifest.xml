@@ -20,11 +20,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".QuartersActivity"/>
+        <activity android:name=".QuartersActivity"
+            android:exported="false" />
 
-        <activity android:name=".MissionActivity" />
-        <activity android:name=".RecruitmentActivity" />
+        <activity
+            android:name=".statistics.Statistics"
+            android:exported="false" />
+        <activity
+            android:name=".MissionActivity"
+            android:exported="false" />
 
+        <activity
+            android:name=".RecruitmentActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

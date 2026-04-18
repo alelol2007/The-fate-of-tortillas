@@ -13,6 +13,9 @@ import java.util.List;
 
 @Dao
 public interface CrewDao {
+    @Query("SELECT * FROM crew LIMIT 1")
+    Crew getCrew();
+
     @Query("SELECT * FROM crew")
     List<Crew> getAll();
 

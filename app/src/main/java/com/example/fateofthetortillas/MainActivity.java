@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        Button btnStats = findViewById(R.id.btn_stats);
 
 
     }

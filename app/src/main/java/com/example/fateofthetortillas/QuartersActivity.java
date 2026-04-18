@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fateofthetortillas.database.AppDatabase;
 import com.example.fateofthetortillas.crewMembers.BaseCrewMember;
+import com.example.fateofthetortillas.statistics.Statistics;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -17,10 +18,18 @@ import java.util.concurrent.Executors;
 
 public class QuartersActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quarters);
+
+        Button btnStats = findViewById(R.id.btn_view_stats);
+        btnStats.setOnClickListener(v -> {
+            Intent intent = new Intent(QuartersActivity.this, Statistics.class);
+            startActivity(intent);
+        });
+
 
         RecyclerView recyclerView = findViewById(R.id.recycler_crew_cards);
 
