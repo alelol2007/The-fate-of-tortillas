@@ -115,4 +115,7 @@ public abstract class BaseCrewMember {
     public abstract String actOther(BaseEnemyMember enemy);
 
 
+    public int getSkill() {
+        return this.skill;
+    }
 }
