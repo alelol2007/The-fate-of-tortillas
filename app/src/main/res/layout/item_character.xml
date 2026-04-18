@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:background="@drawable/mystcalcharacterbackground"
+
+
+        android:layout_width="match_parent"
+
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/character_name"
+            android:padding="3dp"
+            android:background="@color/blue_title"
+            android:textColor="@color/starlight_white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgCharacter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <TextView
+            android:id="@+id/txtSpecialization"
+            android:padding="3dp"
+            android:background="@color/blue_title"
+            android:textColor="@color/starlight_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="@string/specialization"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txtEnergy"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="3dp"
+                android:background="@color/blue_title"
+                android:textColor="@color/starlight_white"
+                android:text="@string/energy" />
+
+            <TextView
+                android:id="@+id/txtSkill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="3dp"
+                android:background="@color/blue_title"
+                android:textColor="@color/starlight_white"
+                android:text="@string/skill_10" />
+
+            <Button
+                android:id="@+id/btn_feed_tortilla"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="FEED TORTILLA 🌮"
+                android:backgroundTint="#FFB300"
+                android:textColor="#000000"
+                android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
