@@ -40,4 +40,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <Button
+        android:id="@+id/btn_view_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Crew Stats"
+        android:backgroundTint="#4000D4FF"
+        android:textColor="@color/starlight_white"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_launch_mission"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
