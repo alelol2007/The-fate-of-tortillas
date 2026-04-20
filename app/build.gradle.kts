@@ -38,6 +38,9 @@ android {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
         }
     }
+    ksp{
+        arg("room.generateKotlin", "false")
+    }
 }
 
 dependencies {
@@ -45,17 +48,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-
-    // Room Database
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.firebase.firestore)
     ksp(libs.room.compiler)
-
-    // Gson
     implementation(libs.google.gson)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
