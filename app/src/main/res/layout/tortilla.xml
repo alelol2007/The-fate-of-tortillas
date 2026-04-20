@@ -27,7 +27,7 @@
             android:layout_width="128dp"
             android:layout_height="100dp"
             android:layout_marginTop="8dp"
-            android:src="@drawable/Tortilla" />
+            android:src="@drawable/tortilla_icon" />
 
         <TextView
             android:id="@+id/txtSpecialization"

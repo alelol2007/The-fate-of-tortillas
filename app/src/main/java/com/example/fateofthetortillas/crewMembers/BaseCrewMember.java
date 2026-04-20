@@ -1,121 +1,192 @@
 package com.example.fateofthetortillas.crewMembers;
-import java.util.UUID;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
 import com.example.fateofthetortillas.alien.BaseEnemyMember;
 
-@Entity(tableName = "crew_members")
-public abstract class BaseCrewMember {
-    @PrimaryKey
-    public String id;
+@Entity(tableName = "crew_table")
+public class BaseCrewMember {
+
+    @PrimaryKey(autoGenerate = true)
+    public int id;
 
     public String name;
-    public String specialization;
     public int skill;
-    public int resilience;
-    public int experience;
+    public String specialization;
     public int energy;
     public int maxEnergy;
-    public Boolean trainingSession;
-    public Boolean alive;
     public int maxShield;
-    public BaseCrewMember(int maxShield, String name, int skill, String specialization, int resilience,  int experience, int energy, int maxEnergy, Boolean trainingSession){
-        this.id = UUID.randomUUID().toString();
+    public int resilience;
+    public int experience;
+    public Boolean alive;
+    public Boolean trainingSession;
+
+    public BaseCrewMember() {
+        this.alive = true;
+    }
+
+    public BaseCrewMember(int maxShield, String name, int skill, String specialization, int resilience, int experience, int energy, int maxEnergy, Boolean trainingSession) {
+        this.maxShield = maxShield;
         this.name = name;
-        this.specialization = specialization;
         this.skill = skill;
+        this.specialization = specialization;
         this.resilience = resilience;
         this.experience = experience;
         this.energy = energy;
         this.maxEnergy = maxEnergy;
         this.trainingSession = trainingSession;
-        this.alive = Boolean.TRUE;
+        this.alive = true;
+    }
+
+    public BaseCrewMember(int id, String name, int skill, String specialization, int energy) {
+        this.id = id;
+        this.name = name;
+        this.skill = skill;
+        this.specialization = specialization;
+        this.energy = energy;
+        this.maxEnergy = energy;
+        this.alive = true;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getSkill() {
+        return skill;
+    }
+
+    public void setSkill(int skill) {
+        this.skill = skill;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
+
+    public int getMaxEnergy() {
+        return maxEnergy;
+    }
+
+    public void setMaxEnergy(int maxEnergy) {
+        this.maxEnergy = maxEnergy;
+    }
+
+    public int getMaxShield() {
+        return maxShield;
+    }
+
+    public void setMaxShield(int maxShield) {
         this.maxShield = maxShield;
     }
 
-    public String getName(){
-        return this.name;
-    }
-    public String getId(){
-        return this.id;
-    }
-    public int getEnergy(){
-        return this.energy;
-    }
-    public int getMaxEnergy(){
-        return this.maxEnergy;
-    }
-    public int getResilience(){
-        return this.resilience;
+    public int getResilience() {
+        return resilience;
     }
 
-    public int getExperience(){
-        return this.experience;
-    }
-    public Boolean getAlive(){
-        return this.alive;
-    }
-    public String getSpecialization(){
-        return this.specialization;
+    public void setResilience(int resilience) {
+        this.resilience = resilience;
     }
 
-    public void damage(int damage){
+    public int getExperience() {
+        return experience;
+    }
+
+    public void setExperience(int experience) {
+        this.experience = experience;
+    }
+
+    public Boolean getAlive() {
+        return alive;
+    }
+
+    public void setAlive(Boolean alive) {
+        this.alive = alive;
+    }
+
+    public Boolean getTrainingSession() {
+        return trainingSession;
+    }
+
+    public void setTrainingSession(Boolean trainingSession) {
+        this.trainingSession = trainingSession;
+    }
+
+    public void damage(int damage) {
         int damage2 = damage;
         damage2 = damage2 - this.resilience;
-        if (damage2 < 0){
+        if (damage2 < 0) {
             damage2 = 0;
         }
         this.resilience -= damage;
         this.energy -= damage2;
-        if (this.energy <= 0){
-            this.alive = Boolean.FALSE;
+        if (this.energy <= 0) {
+            this.energy = 0;
+            this.alive = false;
         }
     }
 
-
-    public void addExperience(int experience){
-        this.experience += experience;
-    }
-
-    public void addEnergy(int energy){
-        this.energy += energy;
-        if (this.energy > this.maxEnergy){
-            this.energy = this.maxEnergy;
-        }
-    }
-    
     public void heal(int heal) {
-        if (this.energy +heal > this.maxEnergy){
+        if (this.energy + heal > this.maxEnergy) {
             this.energy = this.maxEnergy;
-            }
-        else{
+        } else {
             this.energy += heal;
         }
     }
-    public void addShield(int shield){
-        if (this.resilience + shield > this.maxShield){
+
+    public void addShield(int shield) {
+        if (this.resilience + shield > this.maxShield) {
             this.resilience = this.maxShield;
+        } else {
+            this.resilience += shield;
         }
-        this.maxShield += shield;
     }
-    public void addSkill(int skill){
+
+    public void addSkill(int skill) {
         this.skill += skill;
     }
-    public void addExperienceSkill(int experience) {
-        if (this.experience >= 2) {
-            this.addSkill(1);
-            this.experience = 0;
-        }
-        this.addExperience(experience);
+
+    public void addExperience(int experience) {
+        this.experience += experience;
     }
 
-// the action works by having the member who commits it get points, and then the target gets affected, this can range from affecting the aliens to many other things
-    public abstract String act(BaseCrewMember target);
-    public abstract String actOther(BaseEnemyMember enemy);
+    public void addExperienceSkill(int exp) {
+        this.experience += exp;
+    }
 
+    public String act(BaseCrewMember member) {
+        return "";
+    }
 
-    public int getSkill() {
-        return this.skill;
+    public String actOther(BaseEnemyMember enemy) {
+        return "";
+    }
+
+    public void consume() {
     }
 }

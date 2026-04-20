@@ -40,10 +40,19 @@ public abstract class BaseEnemyMember {
             "Amanda Lynn",
             "Shirley U. Jest"
     ));
+
     public BaseEnemyMember(int type, int skill, int energy, int maxEnergy, Boolean alive, int maxShield, int resilience, Float possibility){
+        this(null, type, skill, energy, maxEnergy, alive, maxShield, resilience, possibility);
+    }
+
+    public BaseEnemyMember(String name, int type, int skill, int energy, int maxEnergy, Boolean alive, int maxShield, int resilience, Float possibility){
         this.id = UUID.randomUUID().toString();
-        int Random = new Random().nextInt(funnyNames.size());
-        this.name = funnyNames.get(Random);
+        if (name == null || name.isEmpty()) {
+            int randomIdx = new Random().nextInt(funnyNames.size());
+            this.name = funnyNames.get(randomIdx);
+        } else {
+            this.name = name;
+        }
         this.type = type;
         this.skill = skill;
         this.energy = energy;
@@ -53,6 +62,7 @@ public abstract class BaseEnemyMember {
         this.resilience = resilience;
         this.possibility = possibility;
     }
+
     public String getName(){
         return this.name;
     }
@@ -62,11 +72,17 @@ public abstract class BaseEnemyMember {
     public int getEnergy(){
         return this.energy;
     }
+    public void setEnergy(int energy){
+        this.energy = energy;
+    }
     public int getMaxEnergy(){
         return this.maxEnergy;
     }
     public int getResilience(){
         return this.resilience;
+    }
+    public int getSkill(){
+        return this.skill;
     }
     public Boolean getAlive(){
         return this.alive;

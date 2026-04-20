@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt) 
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -33,11 +33,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    // 3. Use this for Kotlin compatibility (modern DSL)
     kotlin {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
         }
+    }
+    ksp{
+        arg("room.generateKotlin", "false")
     }
 }
 
@@ -46,17 +48,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-
-    // Room Database
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.firebase.firestore)
-    kapt(libs.room.compiler) // Now 'kapt' is recognized as a dependency tool
-
-    // Gson
+    ksp(libs.room.compiler)
     implementation(libs.google.gson)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

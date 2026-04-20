@@ -11,6 +11,11 @@ public class AlienSoldier extends BaseEnemyMember{
     public AlienSoldier(int type, int skill, int energy, int maxEnergy, Boolean alive, int maxShield, int resilience, float possibility){
         super( type,  skill, energy, maxEnergy, alive, maxShield, resilience,(float) (possibility));
     }
+
+    public AlienSoldier(int type, String name, int skill, String subType, int energy, int maxEnergy) {
+        super(name, type, skill, energy, maxEnergy, true, (int)(skill*2.5), (int)(skill*2.7), 0.5f);
+    }
+
     public String act(BaseEnemyMember member){
         member.heal((int)((skill/10)));
         return "my art is definitely not healing";
