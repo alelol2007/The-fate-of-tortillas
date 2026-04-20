@@ -18,41 +18,32 @@ import java.util.concurrent.Executors;
 
 public class QuartersActivity extends AppCompatActivity {
 
-
-    @Override
+     private RecyclerView recyclerView;
+     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quarters);
+        recyclerView = findViewById(R.id.recycler_crew_cards);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        findViewById(R.id.btn_view_stats).setOnClickListener(v ->
+                 startActivity(new Intent(this, Statistics.class)));
+        findViewById(R.id.btn_go_to_recruitment).setOnClickListener(v -> startActivity(new Intent(this, RecruitmentActivity.class)));
+        findViewById(R.id.btn_launch_mission).setOnClickListener(v -> startActivity(new Intent(this, MissionActivity.class)));
+     }
+     @Override
+    protected void onResume() {
+         super.onResume();
+         loadCrewData();
+     }
 
-        Button btnStats = findViewById(R.id.btn_view_stats);
-        btnStats.setOnClickListener(v -> {
-            Intent intent = new Intent(QuartersActivity.this, Statistics.class);
-            startActivity(intent);
-        });
-
-
-        RecyclerView recyclerView = findViewById(R.id.recycler_crew_cards);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
-        Button btnLaunch = findViewById(R.id.btn_launch_mission);
-        btnLaunch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(QuartersActivity.this, MissionActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-
-            List<BaseCrewMember> myRealHand = AppDatabase.getInstance(getApplicationContext()).baseCrewMemberDao().getAll();
-
+     private void loadCrewData() {
+         Executors.newSingleThreadExecutor().execute(() -> {
+             List<BaseCrewMember> myRealHand = AppDatabase.getInstance(this).baseCrewMemberDao().getAll();
             runOnUiThread(() -> {
                 CrewCardAdapter adapter = new CrewCardAdapter(myRealHand);
                 recyclerView.setAdapter(adapter);
             });
-        });
-    }
+         });
+     }
+
 }

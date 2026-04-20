@@ -1,35 +1,34 @@
 package com.example.fateofthetortillas;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import com.example.fateofthetortillas.database.AppDatabase;
+import com.example.fateofthetortillas.crewMembers.*;
+import com.example.fateofthetortillas.alien.*;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.fateofthetortillas.database.AppDatabase;
-import com.example.fateofthetortillas.crewMembers.BaseCrewMember;
-import com.example.fateofthetortillas.crewMembers.Engineer;
-import com.example.fateofthetortillas.crewMembers.Medic;
-import com.example.fateofthetortillas.crewMembers.Pilot;
-import com.example.fateofthetortillas.crewMembers.Scientist;
-import com.example.fateofthetortillas.crewMembers.Soldier;
-import com.example.fateofthetortillas.alien.AlienSoldier;
+
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MissionActivity extends AppCompatActivity {
 
-    private BaseCrewMember playerOne;
-    private BaseCrewMember playerTwo;
-    private AlienSoldier activeAlien;
+    private BaseCrewMember playerOne, playerTwo, selectedPlayer;
+    private BaseEnemyMember activeAlien;
 
     private View cardEnemy, cardPlayerOne, cardPlayerTwo;
     private Button btnAttack;
+    private TextView txtTurnInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,147 +39,141 @@ public class MissionActivity extends AppCompatActivity {
         cardPlayerOne = findViewById(R.id.card_player_one);
         cardPlayerTwo = findViewById(R.id.card_player_two);
         btnAttack = findViewById(R.id.btn_attack);
+        txtTurnInfo = findViewById(R.id.txt_current_turn_info);
 
-        // Hide the button initially until the database loads
-        btnAttack.setEnabled(false);
+        // 1. RANDOMIZE THE ALIEN
+        activeAlien = getRandomAlien();
 
-        // Spawn our Alien
-        activeAlien = new AlienSoldier(1, "Zorgon", 15, "Brute", 50, 50);
-
-        // FETCH REAL FIGHTERS FROM DATABASE
+        // 2. FETCH REAL FIGHTERS
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            List<BaseCrewMember> roster = AppDatabase.getInstance(getApplicationContext()).baseCrewMemberDao().getAll();
+            List<BaseCrewMember> roster = AppDatabase.getInstance(this).baseCrewMemberDao().getAll();
 
             new Handler(Looper.getMainLooper()).post(() -> {
-                // Check if we have enough crew members to fight!
-                if (roster.size() >= 2) {
-                    // We pass the raw database data into our rebuilder so they get their powers back!
-                    playerOne = rebuildFighter(roster.get(0));
-                    playerTwo = rebuildFighter(roster.get(1));
-                } else if (roster.size() == 1) {
-                    // If they only recruited one person, they fight alone!
-                    playerOne = rebuildFighter(roster.get(0));
-                    playerTwo = rebuildFighter(roster.get(0));
-                } else {
-                    Toast.makeText(this, "You have no crew! Go to the Recruitment Desk.", Toast.LENGTH_LONG).show();
-                    finish(); // Kick them back to the quarters
+                if (roster.size() < 2) {
+                    Toast.makeText(this, "Need 2 crew members to start a mission!", Toast.LENGTH_LONG).show();
+                    finish();
                     return;
                 }
 
-                // Now that we have our real players, draw them on the screen!
+                playerOne = rebuildFighter(roster.get(0));
+                playerTwo = rebuildFighter(roster.get(1));
+                selectedPlayer = playerOne;
+                setupSelectionLogic();
                 updateAllCards();
-                btnAttack.setEnabled(true); // Turn the attack button back on
 
-                // Setup the combat button
                 btnAttack.setOnClickListener(v -> performCombatRound());
             });
         });
     }
 
-    private void performCombatRound() {
-        // --- 1. CHECK SPECIAL ABILITIES ---
-
-        // Example: If Player 1 is a Medic, they heal Player 2!
-        if (playerOne instanceof Medic) {
-            playerTwo.setEnergy(Math.min(100, playerTwo.getEnergy() + 15));
-            Toast.makeText(this, playerOne.getName() + " used HEALING AURA!", Toast.LENGTH_SHORT).show();
-        }
-
-        // Example: If Player 2 is a Soldier, they get a rage damage boost!
-        int soldierBonus = 0;
-        if (playerTwo instanceof Soldier) {
-            soldierBonus = 10;
-            Toast.makeText(this, playerTwo.getName() + " used RAGE STRIKE!", Toast.LENGTH_SHORT).show();
-        }
-
-        // --- 2. PLAYERS ATTACK ALIEN ---
-        int totalPlayerDamage = playerOne.getSkill() + playerTwo.getSkill() + soldierBonus;
-        activeAlien.setEnergy(activeAlien.getEnergy() - totalPlayerDamage);
-
-        // --- 3. ALIEN ATTACKS PLAYERS ---
-        if (activeAlien.getEnergy() > 0) {
-            int alienDamage = activeAlien.getSkill();
-
-            // Example: If Player 1 is a Pilot, they dodge half the damage!
-            if (playerOne instanceof Pilot) {
-                playerOne.setEnergy(playerOne.getEnergy() - (alienDamage / 4));
-                Toast.makeText(this, playerOne.getName() + " EVADED the attack!", Toast.LENGTH_SHORT).show();
-            } else {
-                playerOne.setEnergy(playerOne.getEnergy() - (alienDamage / 2));
-            }
-            playerTwo.setEnergy(playerTwo.getEnergy() - (alienDamage / 2));
-        }
-
-        // --- 4. UPDATE THE DATABASE WITH NEW HEALTH ---
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            AppDatabase.getInstance(getApplicationContext()).baseCrewMemberDao().update(playerOne);
-            if(playerOne != playerTwo) {
-                AppDatabase.getInstance(getApplicationContext()).baseCrewMemberDao().update(playerTwo);
-            }
+    private void setupSelectionLogic() {
+        cardPlayerOne.setOnClickListener(v -> {
+            selectedPlayer = playerOne;
+            txtTurnInfo.setText("Ready to attack: " + playerOne.getName());
+            cardPlayerOne.setBackgroundColor(Color.parseColor("#4000D4FF")); // Highlight
+            cardPlayerTwo.setBackgroundColor(Color.TRANSPARENT);
         });
 
-        // --- 5. UPDATE THE SCREEN ---
-        updateAllCards();
+        cardPlayerTwo.setOnClickListener(v -> {
+            selectedPlayer = playerTwo;
+            txtTurnInfo.setText("Ready to attack: " + playerTwo.getName());
+            cardPlayerTwo.setBackgroundColor(Color.parseColor("#4000D4FF")); // Highlight
+            cardPlayerOne.setBackgroundColor(Color.TRANSPARENT);
+        });
 
-        // --- 6. CHECK FOR WIN / LOSS ---
+        cardPlayerOne.performClick();
+    }
+
+    private void performCombatRound() {
+        if (selectedPlayer.getEnergy() <= 0) {
+            Toast.makeText(this, selectedPlayer.getName() + " is too exhausted to move!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String log = selectedPlayer.actOther(activeAlien);
+        Toast.makeText(this, log, Toast.LENGTH_SHORT).show();
+
+
+        if (activeAlien.getEnergy() > 0) {
+
+            String alienLog = activeAlien.actOther(selectedPlayer);
+            new Handler(Looper.getMainLooper()).postDelayed(() ->
+                    Toast.makeText(this, activeAlien.getName() + ": " + alienLog, Toast.LENGTH_SHORT).show(), 1000);
+        }
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDatabase.getInstance(this).baseCrewMemberDao().update(playerOne);
+            AppDatabase.getInstance(this).baseCrewMemberDao().update(playerTwo);
+        });
+
+        updateAllCards();
+        checkGameStatus();
+    }
+
+    private void checkGameStatus() {
         if (activeAlien.getEnergy() <= 0) {
-            btnAttack.setEnabled(false);
-            btnAttack.setText("VICTORY!");
-            Toast.makeText(this, "Alien Defeated!", Toast.LENGTH_LONG).show();
+            txtTurnInfo.setText("VICTORYYYYYYYYYYYYYYYYYYY");
+            btnAttack.setText("RETURN TO QURTERS");
+            btnAttack.setOnClickListener(v -> finish());
         } else if (playerOne.getEnergy() <= 0 && playerTwo.getEnergy() <= 0) {
-            btnAttack.setEnabled(false);
-            btnAttack.setText("DEFEAT...");
-            Toast.makeText(this, "Your squad was wiped out.", Toast.LENGTH_LONG).show();
+            txtTurnInfo.setText("MISSION FAILED: Your squad is unconscious.");
+            btnAttack.setText("RETREAT TO BASE");
+            btnAttack.setBackgroundColor(Color.GRAY);
+
+            btnAttack.setOnClickListener(v -> finish());
         }
     }
 
+    private BaseEnemyMember getRandomAlien() {
+        Random rand = new Random();
+        int type = rand.nextInt(3);
+        int skill = 8 + rand.nextInt(7);
+
+        switch (type) {
+            case 0: return new AlienBomb(skill, 0.5f);
+            case 1: return new AlienFaithKiller(skill, 0.2f);
+            default: return new AlienSoldier(skill, 0.6f);
+        }
+    }
     private void updateAllCards() {
-        // Adding the specialization to their name on the battle board!
-        String p1NameAndClass = playerOne.getName() + " (" + playerOne.getSpecialization() + ")";
-        String p2NameAndClass = playerTwo.getName() + " (" + playerTwo.getSpecialization() + ")";
+        updateSingleCard(cardPlayerOne, playerOne);
+        updateSingleCard(cardPlayerTwo, playerTwo);
+        TextView txtName = cardEnemy.findViewById(R.id.txtName);
+        TextView txtEnergy = cardEnemy.findViewById(R.id.txtEnergy);
+        TextView txtSkill = cardEnemy.findViewById(R.id.txtSkill);
+        ImageView imgEnemy = cardEnemy.findViewById(R.id.imgCharacter);
+        txtName.setText(activeAlien.getName());
+        txtEnergy.setText("HP: " + activeAlien.getEnergy());
+        txtSkill.setText("ATK: " + activeAlien.getSkill());
 
-        updateSingleCard(cardPlayerOne, p1NameAndClass, "Energy: " + playerOne.getEnergy(), "Skill: " + playerOne.getSkill());
-        updateSingleCard(cardPlayerTwo, p2NameAndClass, "Energy: " + playerTwo.getEnergy(), "Skill: " + playerTwo.getSkill());
-        updateSingleCard(cardEnemy, activeAlien.getName(), "Health: " + activeAlien.getEnergy(), "Threat: " + activeAlien.getSkill());
+        if (activeAlien instanceof AlienBomb) {
+            imgEnemy.setImageResource(R.drawable.alien);
+        } else if (activeAlien instanceof AlienSoldier) {
+            imgEnemy.setImageResource(R.drawable.alien);
+        } else {
+            imgEnemy.setImageResource(R.drawable.alien);
+        }
+
+        cardEnemy.findViewById(R.id.txtSpecialization).setVisibility(View.GONE);
+        cardEnemy.findViewById(R.id.btn_feed_tortilla).setVisibility(View.GONE);
     }
 
-    private void updateSingleCard(View cardLayout, String name, String energy, String skill) {
-        TextView txtName = cardLayout.findViewById(R.id.txtName);
-        TextView txtEnergy = cardLayout.findViewById(R.id.txtEnergy);
-        TextView txtSkill = cardLayout.findViewById(R.id.txtSkill);
-
-        txtName.setText(name);
-        txtEnergy.setText(energy);
-        txtSkill.setText(skill);
+    private void updateSingleCard(View card, BaseCrewMember member) {
+        ((TextView) card.findViewById(R.id.txtName)).setText(member.getName());
+        ((TextView) card.findViewById(R.id.txtSpecialization)).setText(member.getSpecialization());
+        ((TextView) card.findViewById(R.id.txtEnergy)).setText("Energy: " + member.getEnergy());
+        ((TextView) card.findViewById(R.id.txtSkill)).setText("Skill: " + member.getSkill());
+        card.findViewById(R.id.btn_feed_tortilla).setVisibility(View.GONE); // Hide training button in mission
     }
 
-    // --- THE RECONSTRUCTOR ---
-    // This takes a generic database character and turns them back into their specific class
-    private BaseCrewMember rebuildFighter(BaseCrewMember rawMember) {
-        String name = rawMember.getName();
-        String spec = rawMember.getSpecialization();
-        int currentEnergy = rawMember.getEnergy();
-        int currentSkill = rawMember.getSkill();
-        int resilience = rawMember.getResilience();
-        int experience = rawMember.getExperience();
-        int maxEnergy = rawMember.getMaxEnergy();
-        boolean trainingSession = rawMember.trainingSession != null ? rawMember.trainingSession : false;
-
-        switch (spec) {
-            case "Pilot":
-                return new Pilot(0, name, currentSkill, resilience, experience, currentEnergy, maxEnergy, trainingSession);
-            case "Engineer":
-                return new Engineer(0, name, currentSkill, resilience, experience, currentEnergy, maxEnergy, trainingSession);
-            case "Soldier":
-                return new Soldier(0, name, currentSkill, resilience, experience, currentEnergy, maxEnergy, trainingSession);
-            case "Medic":
-                return new Medic(0, name, currentSkill, resilience, experience, currentEnergy, maxEnergy, trainingSession);
-            case "Scientist":
-                return new Scientist(0, name, currentSkill, resilience, experience, currentEnergy, maxEnergy, trainingSession);
-            default:
-                return rawMember;
+    private BaseCrewMember rebuildFighter(BaseCrewMember raw) {
+        switch (raw.getSpecialization()) {
+            case "Pilot": return new Pilot(raw.maxShield, raw.name, raw.skill, raw.resilience, raw.experience, raw.energy, raw.maxEnergy, raw.trainingSession);
+            case "Engineer": return new Engineer(raw.maxShield, raw.name, raw.skill, raw.resilience, raw.experience, raw.energy, raw.maxEnergy, raw.trainingSession);
+            case "Soldier": return new Soldier(raw.maxShield, raw.name, raw.skill, raw.resilience, raw.experience, raw.energy, raw.maxEnergy, raw.trainingSession);
+            case "Medic": return new Medic(raw.maxShield, raw.name, raw.skill, raw.resilience, raw.experience, raw.energy, raw.maxEnergy, raw.trainingSession);
+            default: return new Scientist(raw.maxShield, raw.name, raw.skill, raw.resilience, raw.experience, raw.energy, raw.maxEnergy, raw.trainingSession);
         }
     }
 }

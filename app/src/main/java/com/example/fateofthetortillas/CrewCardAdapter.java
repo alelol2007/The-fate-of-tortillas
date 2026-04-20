@@ -35,35 +35,45 @@ public class CrewCardAdapter extends RecyclerView.Adapter<CrewCardAdapter.CrewVi
 
     @Override
     public void onBindViewHolder(@NonNull CrewViewHolder holder, int position) {
-        BaseCrewMember currentMember = crewList.get(position);
+        BaseCrewMember member = crewList.get(position);
 
-        holder.txtName.setText(currentMember.getName() + " (" + currentMember.getSpecialization() + ")");
-        holder.txtEnergy.setText("Energy: " + currentMember.getEnergy());
-        holder.txtSkill.setText("Skill: " + currentMember.getSkill());
-
-
-        holder.btnFeed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int currentEnergy = currentMember.getEnergy();
-
-                if (currentEnergy < 100) {
-                    int newEnergy = Math.min(100, currentEnergy + 25);
-                    currentMember.setEnergy(newEnergy);
-
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    executor.execute(() -> {
-                        AppDatabase.getInstance(v.getContext()).crewDao().update(currentMember);
-
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            notifyItemChanged(position);
-                            Toast.makeText(v.getContext(), currentMember.getName() + " ate a tortilla!", Toast.LENGTH_SHORT).show();
-                        });
-                    });
-                } else {
-                    Toast.makeText(v.getContext(), currentMember.getName() + " is full!", Toast.LENGTH_SHORT).show();
-                }
+        holder.txtName.setText(member.getName());
+        holder.txtSpec.setText(member.getSpecialization()); // Now shows correctly
+        holder.txtEnergy.setText("Energy: " + member.getEnergy() + "/" + member.getMaxEnergy());
+        holder.txtSkill.setText("Skill: " + member.getSkill());
+        if (member.getSpecialization() != null) {
+            switch (member.getSpecialization()) {
+                case "Medic":
+                    holder.imgCharacter.setImageResource(R.drawable.medic);
+                    break;
+                case "Soldier":
+                    holder.imgCharacter.setImageResource(R.drawable.soldier);
+                    break;
+                case "Engineer":
+                    holder.imgCharacter.setImageResource(android.R.drawable.ic_menu_preferences);
+                    break;
+                case "Pilot":
+                    holder.imgCharacter.setImageResource(android.R.drawable.ic_menu_directions);
+                    break;
+                case "Scientist":
+                    holder.imgCharacter.setImageResource(android.R.drawable.ic_menu_search);
+                    break;
             }
+        }
+
+
+        holder.btnFeed.setOnClickListener(v -> {
+            member.setSkill(member.getSkill() + 2);
+            member.setEnergy(member.getMaxEnergy());
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+                AppDatabase.getInstance(v.getContext()).baseCrewMemberDao().update(member);
+
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Toast.makeText(v.getContext(), member.getName() + " ate a legendary tortilla! Stats UP!", Toast.LENGTH_SHORT).show();
+                    notifyItemChanged(position);
+                });
+            });
         });
     }
 
@@ -73,15 +83,18 @@ public class CrewCardAdapter extends RecyclerView.Adapter<CrewCardAdapter.CrewVi
     }
 
     public static class CrewViewHolder extends RecyclerView.ViewHolder {
-        TextView txtName, txtEnergy, txtSkill;
+        TextView txtName, txtSpec, txtEnergy, txtSkill;
         Button btnFeed;
+        android.widget.ImageView imgCharacter;
 
         public CrewViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.txtName);
+            txtSpec = itemView.findViewById(R.id.txtSpecialization);
             txtEnergy = itemView.findViewById(R.id.txtEnergy);
             txtSkill = itemView.findViewById(R.id.txtSkill);
             btnFeed = itemView.findViewById(R.id.btn_feed_tortilla);
+            imgCharacter = itemView.findViewById(R.id.imgCharacter);
         }
     }
 }
